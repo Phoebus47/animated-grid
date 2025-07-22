@@ -12,7 +12,12 @@ module.exports = {
     '!src/index.ts'
   ],
   testMatch: [
-    '<rootDir>/__tests__/**/*.(test|spec).{ts,tsx}'
+    '<rootDir>/__tests__/**/*.test.{ts,tsx}',
+    '<rootDir>/__tests__/**/*.spec.{ts,tsx}',
+    '<rootDir>/src/**/__tests__/**/*.test.{ts,tsx}',
+    '<rootDir>/src/**/__tests__/**/*.spec.{ts,tsx}',
+    '<rootDir>/src/**/*.test.{ts,tsx}',
+    '<rootDir>/src/**/*.spec.{ts,tsx}'
   ],
   transform: {
     '^.+\\.(ts|tsx)$': ['ts-jest', {
