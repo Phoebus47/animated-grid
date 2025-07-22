@@ -1,0 +1,37 @@
+# Development files
+src/
+stories/
+__tests__/
+.storybook/
+
+# Configuration
+tsconfig.json
+jest.config.js
+.eslintrc.js
+.prettierrc
+
+# Documentation
+README.md
+CONTRIBUTING.md
+CHANGELOG.md
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Dependencies
+node_modules/
+
+# Build artifacts
+*.tsbuildinfo
+.cache/
+
+# Testing
+coverage/
+
+# Storybook
+storybook-static/

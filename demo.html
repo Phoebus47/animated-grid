@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimatedGrid Component Demo</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            color: white;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow-x: hidden;
+        }
+        .demo-section {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .demo-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(0,200,150,0.2);
+        }
+        .theme-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 20;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .theme-btn {
+            padding: 8px 16px;
+            background: rgba(0,200,150,0.1);
+            border: 1px solid rgba(0,200,150,0.3);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        .theme-btn:hover, .theme-btn.active {
+            background: rgba(0,200,150,0.3);
+            border-color: rgba(0,200,150,0.6);
+        }
+        .performance-monitor {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 20;
+            background: rgba(0,0,0,0.8);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            border: 1px solid rgba(0,200,150,0.3);
+        }
+        h1 { margin: 0 0 1rem; font-size: 3rem; font-weight: 300; }
+        h2 { margin: 0 0 0.5rem; color: #00c896; }
+        p { margin: 0.5rem 0; opacity: 0.8; }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+            max-width: 800px;
+        }
+        .feature {
+            padding: 1rem;
+            background: rgba(0,200,150,0.05);
+            border: 1px solid rgba(0,200,150,0.1);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Performance Monitor -->
+    <div class="performance-monitor">
+        <div>FPS: <span id="fps">--</span></div>
+        <div>Quality: <span id="quality">--</span></div>
+        <div>Mobile: <span id="mobile">--</span></div>
+    </div>
+
+    <!-- Theme Selector -->
+    <div class="theme-selector">
+        <button class="theme-btn active" onclick="setTheme('default')">Default</button>
+        <button class="theme-btn" onclick="setTheme('matrix')">Matrix</button>
+        <button class="theme-btn" onclick="setTheme('neon')">Neon</button>
+        <button class="theme-btn" onclick="setTheme('tech')">Tech</button>
+        <button class="theme-btn" onclick="setTheme('cyber')">Cyber</button>
+    </div>
+
+    <!-- Demo Container -->
+    <div id="demo-container"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback } = React;
+
+        // Simplified AnimatedGrid component for demo
+        const AnimatedGrid = ({ 
+            gridColor = "rgba(209,209,209,0.16)",
+            glowColor = "rgba(0,200,150,0.6)",
+            rippleColor = "rgba(0,200,150,0.15)",
+            onPerformanceChange,
+            theme = "default"
+        }) => {
+            const canvasRef = React.useRef();
+            const mouseRef = React.useRef({ x: -100, y: -100 });
+            const [fps, setFps] = useState(60);
+            const [isMobile, setIsMobile] = useState(false);
+
+            useEffect(() => {
+                const checkMobile = () => setIsMobile(window.innerWidth < 768);
+                checkMobile();
+                window.addEventListener('resize', checkMobile);
+                return () => window.removeEventListener('resize', checkMobile);
+            }, []);
+
+            useEffect(() => {
+                if (isMobile) return;
+                
+                const canvas = canvasRef.current;
+                if (!canvas) return;
+                
+                const ctx = canvas.getContext('2d');
+                let animationId;
+                let lastTime = performance.now();
+                let frameCount = 0;
+
+                // Animated glow lines
+                let glowLines = Array.from({ length: 12 }, (_, i) => ({
+                    x: (i * 160) + Math.random() * 100,
+                    offset: Math.random() * canvas.height,
+                    speed: 1 + Math.random() * 2
+                }));
+
+                const resize = () => {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                };
+                resize();
+
+                let pulse = 0;
+                const render = () => {
+                    const now = performance.now();
+                    frameCount++;
+                    
+                    if (now - lastTime >= 1000) {
+                        const currentFPS = Math.round((frameCount * 1000) / (now - lastTime));
+                        setFps(currentFPS);
+                        onPerformanceChange?.(currentFPS);
+                        frameCount = 0;
+                        lastTime = now;
+                    }
+
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    // Background gradient
+                    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                    gradient.addColorStop(0, "rgba(0, 200, 150, 0.03)");
+                    gradient.addColorStop(1, "rgba(0, 100, 75, 0.03)");
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    // Grid lines
+                    ctx.strokeStyle = gridColor;
+                    ctx.lineWidth = 0.5;
+
+                    // Vertical lines with wave effect
+                    for (let x = 0; x <= canvas.width; x += 100) {
+                        ctx.beginPath();
+                        for (let y = 0; y <= canvas.height; y += 8) {
+                            const wave = Math.sin(y * 0.02 + pulse * 0.05) * 3;
+                            ctx.lineTo(x + wave, y);
+                        }
+                        ctx.stroke();
+                    }
+
+                    // Horizontal lines
+                    for (let y = 0; y <= canvas.height; y += 80) {
+                        ctx.beginPath();
+                        for (let x = 0; x <= canvas.width; x += 8) {
+                            const wave = Math.sin(x * 0.02 + pulse * 0.05) * 2;
+                            ctx.lineTo(x, y + wave);
+                        }
+                        ctx.stroke();
+                    }
+
+                    // Animated glow lines
+                    glowLines.forEach(line => {
+                        const lineGradient = ctx.createLinearGradient(
+                            line.x, canvas.height - line.offset, 
+                            line.x, canvas.height - line.offset - 200
+                        );
+                        lineGradient.addColorStop(0, "rgba(0,200,150,0)");
+                        lineGradient.addColorStop(0.5, glowColor);
+                        lineGradient.addColorStop(1, "rgba(0,200,150,0)");
+                        
+                        ctx.strokeStyle = lineGradient;
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(line.x, 0);
+                        ctx.lineTo(line.x, canvas.height);
+                        ctx.stroke();
+                        
+                        line.offset += line.speed;
+                        if (line.offset > canvas.height + 200) {
+                            line.offset = -200;
+                        }
+                    });
+
+                    // Mouse ripple
+                    const rippleRadius = 40 + Math.sin(pulse * 0.1) * 15;
+                    const rippleGrad = ctx.createRadialGradient(
+                        mouseRef.current.x, mouseRef.current.y, 0,
+                        mouseRef.current.x, mouseRef.current.y, rippleRadius
+                    );
+                    rippleGrad.addColorStop(0, rippleColor);
+                    rippleGrad.addColorStop(1, "rgba(0,200,150,0)");
+                    ctx.fillStyle = rippleGrad;
+                    ctx.beginPath();
+                    ctx.arc(mouseRef.current.x, mouseRef.current.y, rippleRadius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    pulse++;
+                    animationId = requestAnimationFrame(render);
+                };
+
+                const handleMouseMove = (e) => {
+                    const rect = canvas.getBoundingClientRect();
+                    mouseRef.current.x = e.clientX - rect.left;
+                    mouseRef.current.y = e.clientY - rect.top;
+                };
+
+                window.addEventListener('resize', resize);
+                window.addEventListener('mousemove', handleMouseMove);
+                render();
+
+                return () => {
+                    window.removeEventListener('resize', resize);
+                    window.removeEventListener('mousemove', handleMouseMove);
+                    cancelAnimationFrame(animationId);
+                };
+            }, [gridColor, glowColor, rippleColor, isMobile]);
+
+            if (isMobile) {
+                return React.createElement('img', {
+                    src: '/bg-grid-static.webp',
+                    style: {
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        zIndex: 0
+                    },
+                    alt: 'Grid background'
+                });
+            }
+
+            return React.createElement('canvas', {
+                ref: canvasRef,
+                style: {
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    zIndex: 0,
+                    pointerEvents: 'none'
+                }
+            });
+        };
+
+        // Theme configurations
+        const themes = {
+            default: {
+                gridColor: "rgba(209,209,209,0.16)",
+                glowColor: "rgba(0,200,150,0.6)",
+                rippleColor: "rgba(0,200,150,0.15)"
+            },
+            matrix: {
+                gridColor: "rgba(0,255,0,0.1)",
+                glowColor: "rgba(0,255,0,0.8)",
+                rippleColor: "rgba(0,255,0,0.2)"
+            },
+            neon: {
+                gridColor: "rgba(255,0,255,0.12)",
+                glowColor: "rgba(255,0,255,0.7)",
+                rippleColor: "rgba(255,0,255,0.18)"
+            },
+            tech: {
+                gridColor: "rgba(0,150,255,0.14)",
+                glowColor: "rgba(0,150,255,0.6)",
+                rippleColor: "rgba(0,150,255,0.16)"
+            },
+            cyber: {
+                gridColor: "rgba(255,100,0,0.13)",
+                glowColor: "rgba(255,100,0,0.7)",
+                rippleColor: "rgba(255,100,0,0.17)"
+            }
+        };
+
+        const App = () => {
+            const [currentTheme, setCurrentTheme] = useState('default');
+            const [performanceData, setPerformanceData] = useState({
+                fps: '--',
+                quality: '100%',
+                mobile: 'No'
+            });
+
+            const handlePerformanceChange = useCallback((fps) => {
+                setPerformanceData(prev => ({
+                    ...prev,
+                    fps: fps,
+                    quality: fps > 50 ? '100%' : fps > 30 ? '75%' : '50%'
+                }));
+            }, []);
+
+            useEffect(() => {
+                const updateMobileStatus = () => {
+                    setPerformanceData(prev => ({
+                        ...prev,
+                        mobile: window.innerWidth < 768 ? 'Yes' : 'No'
+                    }));
+                };
+                updateMobileStatus();
+                window.addEventListener('resize', updateMobileStatus);
+                return () => window.removeEventListener('resize', updateMobileStatus);
+            }, []);
+
+            // Update performance display
+            useEffect(() => {
+                document.getElementById('fps').textContent = performanceData.fps;
+                document.getElementById('quality').textContent = performanceData.quality;
+                document.getElementById('mobile').textContent = performanceData.mobile;
+            }, [performanceData]);
+
+            return React.createElement('div', null,
+                React.createElement(AnimatedGrid, {
+                    ...themes[currentTheme],
+                    onPerformanceChange: handlePerformanceChange,
+                    theme: currentTheme
+                }),
+                React.createElement('div', { className: 'demo-section' },
+                    React.createElement('div', { className: 'demo-content' },
+                        React.createElement('h1', null, 'AnimatedGrid'),
+                        React.createElement('h2', null, 'World-Class React Component'),
+                        React.createElement('p', null, 'Production-ready animated background grid with GPU acceleration'),
+                        React.createElement('div', { className: 'features' },
+                            React.createElement('div', { className: 'feature' },
+                                React.createElement('h3', null, '⚡ Performance'),
+                                React.createElement('p', null, 'GPU acceleration with adaptive quality')
+                            ),
+                            React.createElement('div', { className: 'feature' },
+                                React.createElement('h3', null, '📱 Mobile Ready'),
+                                React.createElement('p', null, 'Auto-switches to static fallback')
+                            ),
+                            React.createElement('div', { className: 'feature' },
+                                React.createElement('h3', null, '🎨 Themeable'),
+                                React.createElement('p', null, 'Multiple pre-built themes')
+                            ),
+                            React.createElement('div', { className: 'feature' },
+                                React.createElement('h3', null, '🔌 Plugin System'),
+                                React.createElement('p', null, 'Extensible with custom effects')
+                            )
+                        )
+                    )
+                )
+            );
+        };
+
+        // Global theme setter
+        window.setTheme = (theme) => {
+            document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Re-render with new theme
+            const container = document.getElementById('demo-container');
+            const root = ReactDOM.createRoot(container);
+            
+            const AppWithTheme = () => {
+                const [currentTheme, setCurrentTheme] = useState(theme);
+                const [performanceData, setPerformanceData] = useState({
+                    fps: '--',
+                    quality: '100%',
+                    mobile: 'No'
+                });
+
+                const handlePerformanceChange = useCallback((fps) => {
+                    setPerformanceData(prev => ({
+                        ...prev,
+                        fps: fps,
+                        quality: fps > 50 ? '100%' : fps > 30 ? '75%' : '50%'
+                    }));
+                }, []);
+
+                useEffect(() => {
+                    const updateMobileStatus = () => {
+                        setPerformanceData(prev => ({
+                            ...prev,
+                            mobile: window.innerWidth < 768 ? 'Yes' : 'No'
+                        }));
+                    };
+                    updateMobileStatus();
+                    window.addEventListener('resize', updateMobileStatus);
+                    return () => window.removeEventListener('resize', updateMobileStatus);
+                }, []);
+
+                useEffect(() => {
+                    document.getElementById('fps').textContent = performanceData.fps;
+                    document.getElementById('quality').textContent = performanceData.quality;
+                    document.getElementById('mobile').textContent = performanceData.mobile;
+                }, [performanceData]);
+
+                return React.createElement('div', null,
+                    React.createElement(AnimatedGrid, {
+                        ...themes[theme],
+                        onPerformanceChange: handlePerformanceChange,
+                        theme: theme
+                    }),
+                    React.createElement('div', { className: 'demo-section' },
+                        React.createElement('div', { className: 'demo-content' },
+                            React.createElement('h1', null, 'AnimatedGrid'),
+                            React.createElement('h2', null, `${theme.charAt(0).toUpperCase() + theme.slice(1)} Theme`),
+                            React.createElement('p', null, 'Production-ready animated background grid with GPU acceleration'),
+                            React.createElement('div', { className: 'features' },
+                                React.createElement('div', { className: 'feature' },
+                                    React.createElement('h3', null, '⚡ Performance'),
+                                    React.createElement('p', null, 'GPU acceleration with adaptive quality')
+                                ),
+                                React.createElement('div', { className: 'feature' },
+                                    React.createElement('h3', null, '📱 Mobile Ready'),
+                                    React.createElement('p', null, 'Auto-switches to static fallback')
+                                ),
+                                React.createElement('div', { className: 'feature' },
+                                    React.createElement('h3', null, '🎨 Themeable'),
+                                    React.createElement('p', null, 'Multiple pre-built themes')
+                                ),
+                                React.createElement('div', { className: 'feature' },
+                                    React.createElement('h3', null, '🔌 Plugin System'),
+                                    React.createElement('p', null, 'Extensible with custom effects')
+                                )
+                            )
+                        )
+                    )
+                );
+            };
+            
+            root.render(React.createElement(AppWithTheme));
+        };
+
+        // Initial render
+        const container = document.getElementById('demo-container');
+        const root = ReactDOM.createRoot(container);
+        root.render(React.createElement(App));
+    </script>
+</body>
+</html>

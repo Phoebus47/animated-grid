@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Convert SVG to WebP</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        .preview { border: 2px dashed #ddd; padding: 20px; text-align: center; margin: 20px 0; }
+        canvas { max-width: 100%; border: 1px solid #ccc; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        .success { color: green; margin: 10px 0; }
+        .info { background: #e7f3ff; padding: 15px; border-left: 4px solid #007bff; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 AnimatedGrid Static Background Generator</h1>
+        
+        <div class="info">
+            <p><strong>Purpose:</strong> Generate static fallback image for AnimatedGrid mobile/reduced-motion users</p>
+            <p><strong>Format:</strong> WebP optimized for web performance</p>
+        </div>
+
+        <div class="preview">
+            <canvas id="canvas" width="1920" height="1080" style="max-width: 500px;"></canvas>
+        </div>
+
+        <div>
+            <button onclick="generateGrid()">🔄 Generate Grid</button>
+            <button onclick="downloadWebP()">📥 Download WebP</button>
+            <button onclick="downloadPNG()">📥 Download PNG (Fallback)</button>
+            <button onclick="generateGrid()">✨ New Random Lines</button>
+        </div>
+
+        <div id="status"></div>
+
+        <h3>📋 Usage Instructions:</h3>
+        <ol>
+            <li>Click "Generate Grid" to create the pattern</li>
+            <li>Download as WebP for optimal performance</li>
+            <li>Place in your <code>public/</code> folder as <code>bg-grid-static.webp</code></li>
+            <li>The AnimatedGrid component will automatically use this as fallback</li>
+        </ol>
+
+        <h3>🎛️ Customization:</h3>
+        <p>Edit the JavaScript below to match your theme colors:</p>
+        <textarea id="colorConfig" style="width: 100%; height: 100px; font-family: monospace;">
+gridColor: 'rgba(209,209,209,0.16)'
+glowColor: 'rgba(0,200,150,0.6)'
+backgroundColor: 'transparent'
+        </textarea>
+        <button onclick="updateColors()">🎨 Apply Colors</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let config = {
+            gridColor: 'rgba(209,209,209,0.16)',
+            glowColor: 'rgba(0,200,150,0.6)',
+            backgroundColor: 'transparent'
+        };
+
+        function generateGrid() {
+            ctx.clearRect(0, 0, 1920, 1080);
+            
+            if (config.backgroundColor !== 'transparent') {
+                ctx.fillStyle = config.backgroundColor;
+                ctx.fillRect(0, 0, 1920, 1080);
+            }
+
+            // Draw base grid pattern
+            ctx.strokeStyle = config.gridColor;
+            ctx.lineWidth = 0.5;
+
+            // Vertical lines
+            for (let x = 0; x <= 1920; x += 40) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, 1080);
+                ctx.stroke();
+            }
+
+            // Horizontal lines
+            for (let y = 0; y <= 1080; y += 40) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(1920, y);
+                ctx.stroke();
+            }
+
+            drawRandomGlowingLines();
+
+            document.getElementById('status').innerHTML = '<div class="success">✅ Vertical glowing lines generated (matches main component)!</div>';
+        }
+
+        function drawRandomGlowingLines() {
+            const numLines = Math.floor(Math.random() * 5) + 8;
+            
+            for (let i = 0; i < numLines; i++) {
+                const x = Math.floor(Math.random() * 48) * 40; // Snap to grid
+                const startY = Math.random() * 400;
+                const endY = startY + 200 + Math.random() * 400;
+                
+                drawGlowingLine(x, startY, x, Math.min(endY, 1080), true);
+            }
+        }
+
+        function drawGlowingLine(x1, y1, x2, y2, isVertical) {
+            let gradient;
+            if (isVertical) {
+                gradient = ctx.createLinearGradient(x1, y1, x1, y2);
+            } else {
+                gradient = ctx.createLinearGradient(x1, y1, x2, y1);
+            }
+            
+            gradient.addColorStop(0, 'rgba(0,200,150,0)');
+            gradient.addColorStop(0.2, config.glowColor);
+            gradient.addColorStop(0.5, config.glowColor);
+            gradient.addColorStop(0.8, config.glowColor);
+            gradient.addColorStop(1, 'rgba(0,200,150,0)');
+
+            // Multiple passes for glow intensity
+            for (let pass = 0; pass < 3; pass++) {
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = 3 - pass;
+                ctx.globalAlpha = 0.4 - (pass * 0.1);
+                
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            }
+            
+            ctx.globalAlpha = 1;
+        }
+
+        function downloadWebP() {
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'bg-grid-static.webp';
+                a.click();
+                URL.revokeObjectURL(url);
+                document.getElementById('status').innerHTML = '<div class="success">📥 WebP downloaded! Place in public/ folder</div>';
+            }, 'image/webp', 0.8);
+        }
+
+        function downloadPNG() {
+            const url = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'bg-grid-static.png';
+            a.click();
+            document.getElementById('status').innerHTML = '<div class="success">📥 PNG downloaded! (Fallback format)</div>';
+        }
+
+        function updateColors() {
+            const colorText = document.getElementById('colorConfig').value;
+            try {
+                const lines = colorText.split('\n');
+                lines.forEach(line => {
+                    if (line.includes('gridColor:')) {
+                        config.gridColor = line.split("'")[1];
+                    } else if (line.includes('glowColor:')) {
+                        config.glowColor = line.split("'")[1];
+                    } else if (line.includes('backgroundColor:')) {
+                        config.backgroundColor = line.split("'")[1];
+                    }
+                });
+                generateGrid();
+                document.getElementById('status').innerHTML = '<div class="success">🎨 Colors updated!</div>';
+            } catch (error) {
+                document.getElementById('status').innerHTML = '<div style="color: red;">❌ Color format error. Use format: gridColor: \'rgba(r,g,b,a)\'</div>';
+            }
+        }
+
+        // Generate initial grid
+        window.onload = () => {
+            generateGrid();
+        };
+    </script>
+</body>
+</html>
