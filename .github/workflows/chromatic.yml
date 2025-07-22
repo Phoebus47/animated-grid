@@ -12,13 +12,15 @@ jobs:
     environment: main
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: pnpm/action-setup@v2
         with:
           version: latest
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'pnpm'
+          node-version: "18"
+          cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm chromatic
         env:
