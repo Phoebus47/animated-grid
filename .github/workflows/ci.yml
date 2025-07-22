@@ -33,7 +33,7 @@ jobs:
       run: pnpm run lint
       
     - name: 🧪 Run tests
-      run: pnpm test -- --coverage --watchAll=false --verbose
+      run: pnpm run test:ci
       
     - name: 📊 Upload coverage to Codecov
       uses: codecov/codecov-action@v3

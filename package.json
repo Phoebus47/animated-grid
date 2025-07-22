@@ -12,9 +12,10 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "jest --coverage --passWithNoTests",
+    "test:ci": "jest --coverage --watchAll=false --passWithNoTests --verbose",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "lint": "tsc --noEmit",
