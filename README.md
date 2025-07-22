@@ -10,7 +10,7 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Storybook](https://cdn.jsdelivr.net/gh/storybookjs/brand@main/badge/badge-storybook.svg)](https://phoebus47.github.io/animated-grid)
 
-[![Visual Regression by Chromatic](https://github.com/Phoebus47/animated-grid/actions/workflows/chromatic.yml/badge.svg)](https://www.chromatic.com/builds?appId=YOUR_CHROMATIC_APP_ID)
+[![Visual Regression by Chromatic](https://github.com/Phoebus47/animated-grid/actions/workflows/chromatic.yml/badge.svg)](https://www.chromatic.com/builds?appId=68731fba29f23d0e13e937)
 
 ---
 
