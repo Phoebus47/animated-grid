@@ -4,9 +4,23 @@
 > Themeable, plugin-ready, customizable, perfect for hero, dashboard, landing pages.
 
 [![NPM Version](https://img.shields.io/npm/v/animated-grid.svg)](https://www.npmjs.com/package/animated-grid)
+[![Build Status](https://github.com/Phoebus47/animated-grid/workflows/🧪%20CI/CD%20Pipeline/badge.svg)](https://github.com/Phoebus47/animated-grid/actions)
+[![Coverage Status](https://img.shields.io/codecov/c/github/Phoebus47/animated-grid.svg)](https://codecov.io/gh/Phoebus47/animated-grid)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Storybook](https://cdn.jsdelivr.net/gh/storybookjs/brand@main/badge/badge-storybook.svg)](https://your-storybook-url.netlify.app)
+[![Storybook](https://cdn.jsdelivr.net/gh/storybookjs/brand@main/badge/badge-storybook.svg)](https://phoebus47.github.io/animated-grid)
+
+[![Visual Regression by Chromatic](https://github.com/Phoebus47/animated-grid/actions/workflows/chromatic.yml/badge.svg)](https://www.chromatic.com/builds?appId=68731fba29f23d0e13e937)
+
+---
+
+## 🧑‍💻 Interactive Demo
+
+[![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/sandbox/github/Phoebus47/animated-grid/tree/main/examples/react)
+
+▶️ **[Live Storybook Demo](https://phoebus47.github.io/animated-grid/)**
+
+---
 
 ## ✨ Features
 
@@ -224,7 +238,21 @@ pnpm build
 
 ## 📚 Storybook
 
-Interactive examples and documentation: [View Storybook →](https://your-storybook-url.netlify.app)
+Interactive examples and documentation: [View Storybook →](https://phoebus47.github.io/animated-grid)
+
+---
+
+## 🌏 Internationalization (i18n)
+
+**English**
+
+> AnimatedGrid is a world-class, retina-ready, accessible animated background grid for React/Next.js. Themeable, plugin-ready, customizable, perfect for hero, dashboard, landing pages.
+
+**ภาษาไทย**
+
+> AnimatedGrid คือกริดพื้นหลังแบบแอนิเมชันสำหรับ React/Next.js ที่สวยงามระดับโลก รองรับ Retina, ปรับแต่งธีม/ปลั๊กอินได้ เหมาะกับ hero, dashboard, landing page
+
+Want to help translate? See [CONTRIBUTING.md](CONTRIBUTING.md)!
 
 ## 🤝 Contributing
 
@@ -238,7 +266,7 @@ Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md)
 
 ## 📄 License
 
-[MIT](LICENSE) © [Thanakrit Thanyawatsakul](https://github.com/YOUR-USERNAME)
+[MIT](LICENSE) © [Thanakrit Thanyawatsakul](https://github.com/Phoebus47)
 
 ---
 
