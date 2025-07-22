@@ -10,6 +10,18 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Storybook](https://cdn.jsdelivr.net/gh/storybookjs/brand@main/badge/badge-storybook.svg)](https://phoebus47.github.io/animated-grid)
 
+[![Visual Regression by Chromatic](https://github.com/Phoebus47/animated-grid/actions/workflows/chromatic.yml/badge.svg)](https://www.chromatic.com/builds?appId=YOUR_CHROMATIC_APP_ID)
+
+---
+
+## 🧑‍💻 Interactive Demo
+
+[![Open in CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/sandbox/github/Phoebus47/animated-grid/tree/main/examples/react)
+
+▶️ **[Live Storybook Demo](https://phoebus47.github.io/animated-grid/)**
+
+---
+
 ## ✨ Features
 
 - 🚀 **Production Ready** - Battle-tested, performance optimized
@@ -226,7 +238,21 @@ pnpm build
 
 ## 📚 Storybook
 
-Interactive examples and documentation: [View Storybook →](https://your-storybook-url.netlify.app)
+Interactive examples and documentation: [View Storybook →](https://phoebus47.github.io/animated-grid)
+
+---
+
+## 🌏 Internationalization (i18n)
+
+**English**
+
+> AnimatedGrid is a world-class, retina-ready, accessible animated background grid for React/Next.js. Themeable, plugin-ready, customizable, perfect for hero, dashboard, landing pages.
+
+**ภาษาไทย**
+
+> AnimatedGrid คือกริดพื้นหลังแบบแอนิเมชันสำหรับ React/Next.js ที่สวยงามระดับโลก รองรับ Retina, ปรับแต่งธีม/ปลั๊กอินได้ เหมาะกับ hero, dashboard, landing page
+
+Want to help translate? See [CONTRIBUTING.md](CONTRIBUTING.md)!
 
 ## 🤝 Contributing
 
@@ -240,7 +266,7 @@ Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md)
 
 ## 📄 License
 
-[MIT](LICENSE) © [Thanakrit Thanyawatsakul](https://github.com/YOUR-USERNAME)
+[MIT](LICENSE) © [Thanakrit Thanyawatsakul](https://github.com/Phoebus47)
 
 ---
 
