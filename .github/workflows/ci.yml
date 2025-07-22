@@ -33,7 +33,7 @@ jobs:
       run: pnpm run lint
       
     - name: 🧪 Run tests
-      run: pnpm test -- --coverage --watchAll=false
+      run: pnpm run test:ci
       
     - name: 📊 Upload coverage to Codecov
       uses: codecov/codecov-action@v5
@@ -68,7 +68,7 @@ jobs:
       run: pnpm run build
       
     - name: 📤 Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: dist
         path: dist/
@@ -100,7 +100,7 @@ jobs:
       run: pnpm run build-storybook
       
     - name: 📤 Upload Storybook artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: storybook
         path: storybook-static/
