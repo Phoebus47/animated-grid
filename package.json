@@ -65,7 +65,7 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.15",
     "@types/react": "^19.1.8",
-    "chromatic": "^13.1.2",
+    "chromatic": "^13.3.0",
     "jest": "^30.0.4",
     "jest-canvas-mock": "^2.5.1",
     "jest-environment-jsdom": "^30.0.4",
